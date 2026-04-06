@@ -68,79 +68,102 @@ canvas{
 .book {
   display:none;
   position: relative;
-  width:400px;
-  height:210px;
-  perspective:1500px;
+  width:600px;
+  height:350px;
+  perspective:2000px;
   margin-top:30px;
-  border-radius:12px;
-  overflow: hidden;
 }
 
-.staticLeft, .flipPage {
-  position: absolute;
-  width:45%;
-  height:90%;
-  top:5%;
-  overflow: hidden;
-  border-radius:12px;
-  background:white;
+#bookPages {
+  width:100%;
+  height:100%;
+  position:relative;
 }
 
-.staticLeft {
-  left:5%;
-  z-index:1;
+.page {
+  width:50%;
+  height:100%;
+  position:absolute;
+  right:0;
+  top:0;
+  transform-origin:left;
+  transform-style:preserve-3d;
+  transition:transform 1s;
+  cursor:pointer;
 }
 
-.flipPage {
-  right:5%;
-  transform-origin: left;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  z-index:2;
+.page-front, .page-back {
+  position:absolute;
+  width:100%;
+  height:100%;
+  backface-visibility:hidden;
 }
 
-.front, .back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  border-radius:12px;
+.page-back {
+  transform:rotateY(180deg);
 }
 
-.back {
-  transform: rotateY(180deg);
+.page img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
-.staticLeft img, .flipPage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius:12px;
-}
-
-.flipPage.flipping {
-  animation: flip 1s forwards;
-}
-
-@keyframes flip {
-  0% { transform: rotateY(0deg); }
-  100% { transform: rotateY(-180deg); }
+.page.flipped {
+  transform:rotateY(-180deg);
 }
 
 .cover {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: #ff4da6;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  cursor: pointer;
-  z-index: 10;
-  border-radius:12px;
-  box-shadow:0 0 20px #ff4da6;
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:#ff4da6;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  z-index:10;
+  cursor:pointer;
+}
+
+.leftSide {
+  position:absolute;
+  left:0;
+  top:0;
+  width:50%;
+  height:100%;
+  background:white;
+  border-radius:10px 0 0 10px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+  z-index:0;
+} 
+
+#photoHeart{
+  display:none;
+  position:absolute;
+  width:400px;
+  height:400px;
+}
+
+#photoHeart img{
+  position:absolute;
+  width:60px;
+  height:60px;
+  object-fit:cover;
+  border-radius:10px;
+  transition:all 1s ease;
+}
+
+/* Анимация текста после альбома */
+@keyframes birthdayText {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(-10deg); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2) rotate(5deg); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+
+#finalText.show {
+  display: block;
+  animation: birthdayText 2s ease forwards;
 }
 </style>
 </head>
@@ -158,25 +181,31 @@ canvas{
   <div id="w4" class="word">you</div>
   <div id="heart" class="word">❤️</div>
 
-  <img id="newGif"
-       src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGtyYmsxMTM0YjB4NDQ5Y3dwd3NsN3JtcjQ2eHN0aHJ4bGthcDN3MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/COxdWdYHHtPgWvDb5k/giphy.gif">
+ <img id="newGif"
+     src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGtyYmsxMTM0YjB4NDQ5Y3dwd3NsN3JtcjQ2eHN0aHJ4bGthcDN3MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/COxdWdYHHtPgWvDb5k/giphy.gif">
+
+<audio id="music" src="https://cdn.pixabay.com/download/audio/2023/03/26/audio_a2c0b29504.mp3?filename=modern-classical-happy-birthday-to-you-370804.mp3" loop></audio>
 
   <!-- АЛЬБОМ -->
-  <div class="book" id="album">
-    <div class="cover" id="cover">📖 Открыть альбом</div>
-    <div class="staticLeft">
-      <img id="leftImg">
-    </div>
-    <div class="flipPage" id="page">
-      <div class="front">
-        <img id="frontImg">
-      </div>
-      <div class="back">
-        <img id="backImg">
-      </div>
-    </div>
-  </div>
+<div class="book" id="album">
+  <div class="cover" id="cover">📖 Открыть альбом</div>
+  <div id="bookPages">
+  <div class="leftSide"></div>
+</div>
+</div>
+<div id="photoHeart"></div>
 
+<div id="finalText" style="
+  display:none;
+  position:absolute;
+  font-size:60px;
+  color:#ff4da6;
+  text-shadow:0 0 20px #ff4da6;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+">
+  С ДНЁМ РОЖДЕНИЯ 🎉
 </div>
 
 <script>
@@ -220,42 +249,91 @@ const heart=document.getElementById("heart");
 const gif=document.getElementById("newGif");
 const album=document.getElementById("album");
 const cover=document.getElementById("cover");
-const leftImg=document.getElementById("leftImg");
-const frontImg=document.getElementById("frontImg");
-const backImg=document.getElementById("backImg");
-const page=document.getElementById("page");
+const music = document.getElementById("music");
 
 const photos = [
-  "https://picsum.photos/500/260?1",
-  "https://picsum.photos/500/260?2",
-  "https://picsum.photos/500/260?3",
-  "https://picsum.photos/500/260?4",
-  "https://picsum.photos/500/260?5",
-  "https://picsum.photos/500/260?6",
-  "https://picsum.photos/500/260?7",
-  "https://picsum.photos/500/260?8"
+  "https://image2url.com/r2/default/images/1775056899876-6c0309a2-0378-4e11-8f5d-b1874a11d8d3.png",
+  "https://image2url.com/r2/default/images/1775056964890-d19bb721-fb48-4d07-9567-a4828f30f3ae.jpg",
+  "https://image2url.com/r2/default/images/1775056991689-a6b7e775-9197-44d3-bd37-337900f40bc2.jpg",
+  "https://image2url.com/r2/default/images/1775057057416-ad727d57-e424-41de-b64c-5c17db06bd9e.png",
+  "https://image2url.com/r2/default/images/1775057092991-52765f3c-b9b8-4b7d-8f74-0aa3178f2bde.png",
+  "https://image2url.com/r2/default/images/1775501474046-7c3db85b-fa05-4b15-84b1-268a1a993a9b.jpg",
 ];
 
-let index = 0;
+const bookPages = document.getElementById("bookPages");
 
-function updatePhotos(){
-  leftImg.src = photos[index];
-  frontImg.src = photos[(index + 1) % photos.length];
-  backImg.src = photos[(index + 2) % photos.length];
+function createBook(){
+  bookPages.innerHTML = "";
+
+  for(let i = 0; i < photos.length; i += 2){
+
+    const page = document.createElement("div");
+    page.className = "page";
+    page.style.zIndex = photos.length - i;
+
+    const front = photos[i];
+    const back = photos[i+1] || photos[i];
+
+    page.innerHTML = `
+      <div class="page-front">
+        <img src="${front}">
+      </div>
+      <div class="page-back">
+        <img src="${back}">
+      </div>
+    `;
+
+ page.onclick = () => {
+  if(page.classList.contains("flipped")){
+    page.classList.remove("flipped");
+    page.style.zIndex = photos.length - i;
+  } else {
+    page.classList.add("flipped");
+    page.style.zIndex = i;
+  }
+
+  checkAllFlipped();
+};
+
+    bookPages.appendChild(page);
+  }
 }
+
+
 
 setTimeout(()=>{
   c.style.display="block";
-  const timer=setInterval(()=>{
+
+  const timer = setInterval(()=>{
     count--;
-    if(count>0) c.innerText=count;
-    else{
+
+    if(count > 0){
+      c.innerText = count;
+    } else {
       clearInterval(timer);
-      c.style.display="none";
+      c.style.display = "none";
+
+      music.volume = 0;
+music.play();
+
+let vol = 0;
+const fade = setInterval(() => {
+  if(vol < 1){
+  vol += 0.05;
+  if(vol > 1) vol = 1; // 🔥 фикс
+  music.volume = vol;
+
+  } else {
+    clearInterval(fade);
+  }
+}, 200); // 🎵 музыка
+
       showWords();
     }
-  },1000);
-},3000);
+
+  }, 1000);
+
+}, 3000);
 
 function showWords(){
   setTimeout(()=>{ w1.style.display="block"; },500);
@@ -281,21 +359,82 @@ function showWords(){
 // ALBUM FLIP
 cover.onclick = () => {
   cover.style.display = "none";
-  updatePhotos();
+  createBook();
 }
 
-page.onclick = () => {
-  backImg.src = photos[(index + 2) % photos.length];
-  page.classList.add("flipping");
+document.body.addEventListener("click", () => {
+  music.muted = true;
+music.play().then(()=>{
+  music.muted = false;
+});
+}, { once: true });
 
-  setTimeout(() => {
-    index = (index + 2) % photos.length;
-    leftImg.src = photos[index];
-    frontImg.src = photos[(index + 1) % photos.length];
-    page.classList.remove("flipping");
-  }, 1000);
+
+const heartContainer = document.getElementById("photoHeart");
+
+function checkAllFlipped(){
+  const pages = document.querySelectorAll(".page");
+
+  const allFlipped = Array.from(pages).every(p =>
+    p.classList.contains("flipped")
+  );
+
+  console.log("pages:", pages.length, "allFlipped:", allFlipped);
+
+  if(allFlipped){
+    setTimeout(showHeart, 800);
+  }
 }
+
+function showHeart(){
+  album.style.display = "none";
+  heartContainer.style.display = "block";
+
+  heartContainer.innerHTML = "";
+
+  const positions = [];
+
+  for(let t = 0; t < Math.PI * 2; t += 0.3){
+    const x = 16 * Math.pow(Math.sin(t),3);
+    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+
+    positions.push({
+      x: x * 10 + 200,
+      y: -y * 10 + 200
+    });
+  }
+
+  let completed = 0;
+
+  positions.forEach((pos, i)=>{
+    const img = document.createElement("img");
+    img.src = photos[i % photos.length];
+
+    img.style.left = "200px";
+    img.style.top = "200px";
+
+    heartContainer.appendChild(img);
+
+    setTimeout(()=>{
+      img.style.left = pos.x + "px";
+      img.style.top = pos.y + "px";
+
+      completed++;
+
+      if(completed === positions.length){
+        setTimeout(()=>{
+          const finalText = document.getElementById("finalText");
+          finalText.classList.add("show"); // 🔥 добавляем анимацию
+        }, 800); // задержка после формирования сердца
+      }
+
+    }, 50 * i);
+  });
+}
+
+setTimeout(() => {
+  document.getElementById("finalText").style.display = "block";
+}, positions.length * 50 + 1000);
 </script>
-
 </body>
 </html>
