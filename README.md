@@ -141,16 +141,22 @@ canvas{
 #photoHeart{
   display:none;
   position:absolute;
-  width:400px;
-  height:400px;
+  width:80vmin;
+  height:80vmin;
+
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+
+  z-index:5; /* 🔥 важно */
 }
 
 #photoHeart img{
   position:absolute;
-  width:60px;
-  height:60px;
+  width:90px;
+  height:90px;
   object-fit:cover;
-  border-radius:10px;
+  border-radius:12px;
   transition:all 1s ease;
 }
 
@@ -390,51 +396,56 @@ function showHeart(){
   album.style.display = "none";
   heartContainer.style.display = "block";
 
-  heartContainer.innerHTML = "";
+  // 🔥 ДАЁМ БРАУЗЕРУ ВРЕМЯ ОТРЕНДЕРИТЬ
+  setTimeout(() => {
 
-  const positions = [];
+    heartContainer.innerHTML = "";
 
-  for(let t = 0; t < Math.PI * 2; t += 0.3){
-    const x = 16 * Math.pow(Math.sin(t),3);
-    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+    const rect = heartContainer.getBoundingClientRect();
+    const size = rect.width / 2;
+	console.log("size:", size);
 
-    positions.push({
-      x: x * 10 + 200,
-      y: -y * 10 + 200
+    const positions = [];
+
+    for(let t = 0; t < Math.PI * 2; t += 0.15){
+      const x = 16 * Math.pow(Math.sin(t),3);
+      const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+
+      positions.push({
+        x: x * size/18 + size,
+        y: -y * size/18 + size
+      });
+    }
+
+    let completed = 0;
+
+    positions.forEach((pos, i)=>{
+      const img = document.createElement("img");
+      img.src = photos[i % photos.length];
+
+      img.style.left = size + "px";
+      img.style.top = size + "px";
+
+      heartContainer.appendChild(img);
+
+      setTimeout(()=>{
+        img.style.left = pos.x + "px";
+        img.style.top = pos.y + "px";
+
+        completed++;
+
+        if(completed === positions.length){
+          setTimeout(()=>{
+            document.getElementById("finalText").classList.add("show");
+          }, 800);
+        }
+
+      }, 25 * i);
     });
-  }
 
-  let completed = 0;
-
-  positions.forEach((pos, i)=>{
-    const img = document.createElement("img");
-    img.src = photos[i % photos.length];
-
-    img.style.left = "200px";
-    img.style.top = "200px";
-
-    heartContainer.appendChild(img);
-
-    setTimeout(()=>{
-      img.style.left = pos.x + "px";
-      img.style.top = pos.y + "px";
-
-      completed++;
-
-      if(completed === positions.length){
-        setTimeout(()=>{
-          const finalText = document.getElementById("finalText");
-          finalText.classList.add("show"); // 🔥 добавляем анимацию
-        }, 800); // задержка после формирования сердца
-      }
-
-    }, 50 * i);
-  });
+  }, 50); // 🔥 ключевой фикс
 }
 
-setTimeout(() => {
-  document.getElementById("finalText").style.display = "block";
-}, positions.length * 50 + 1000);
 </script>
 </body>
 </html>
